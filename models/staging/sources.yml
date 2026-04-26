@@ -1,0 +1,72 @@
+version: 2
+
+sources:
+  - name: sncf_raw
+    schema: raw
+    description: "Données brutes SNCF issues de data.sncf.com"
+    tables:
+      - name: regularite_liaisons
+        description: "Régularité mensuelle TGV par liaison (gare départ × gare arrivée × mois)"
+        columns:
+          - name: Date
+            description: "Mois au format YYYY-MM"
+          - name: Service
+            description: "Type de service : National ou International"
+          - name: Gare de départ
+            description: "Nom de la gare de départ en majuscules"
+          - name: Gare d'arrivée
+            description: "Nom de la gare d'arrivée en majuscules"
+          - name: Durée moyenne du trajet
+            description: "Durée moyenne en minutes"
+          - name: Nombre de circulations prévues
+            description: "Nombre de trains planifiés sur la liaison"
+          - name: Nombre de trains annulés
+            description: "Nombre de trains annulés"
+          - name: Nombre de trains en retard au départ
+            description: "Nombre de trains partis en retard"
+          - name: Retard moyen des trains en retard au départ
+            description: "Retard moyen en minutes, uniquement trains en retard au départ"
+          - name: Retard moyen de tous les trains au départ
+            description: "Retard moyen en minutes, tous trains confondus au départ"
+          - name: Nombre de trains en retard à l'arrivée
+            description: "Nombre de trains arrivés en retard"
+          - name: Retard moyen des trains en retard à l'arrivée
+            description: "Retard moyen en minutes, uniquement trains en retard à l'arrivée"
+          - name: Retard moyen de tous les trains à l'arrivée
+            description: "Retard moyen en minutes, tous trains confondus à l'arrivée"
+          - name: Nombre trains en retard > 15min
+            description: "Nombre de trains avec un retard supérieur à 15 minutes"
+          - name: Nombre trains en retard > 30min
+            description: "Nombre de trains avec un retard supérieur à 30 minutes"
+          - name: Nombre trains en retard > 60min
+            description: "Nombre de trains avec un retard supérieur à 60 minutes"
+          - name: Prct retard pour causes externes
+            description: "Part des retards dus à des causes externes (météo, personnes sur voie...)"
+          - name: Prct retard pour cause infrastructure
+            description: "Part des retards dus à l'infrastructure ferroviaire"
+          - name: Prct retard pour cause gestion trafic
+            description: "Part des retards dus à la gestion du trafic"
+          - name: Prct retard pour cause matériel roulant
+            description: "Part des retards dus au matériel roulant"
+          - name: Prct retard pour cause gestion en gare et réutilisation de matériel
+            description: "Part des retards dus à la gestion en gare"
+          - name: Prct retard pour cause prise en compte voyageurs (affluence, gestions PSH, correspondances)
+            description: "Part des retards dus à la prise en charge des voyageurs"
+
+      - name: gares_voyageurs
+        description: "Référentiel de toutes les gares françaises avec coordonnées GPS"
+        columns:
+          - name: Nom_Gare
+            description: "Nom officiel de la gare"
+          - name: Trigramme
+            description: "Code court de la gare sur 3 lettres"
+          - name: Segment(s) DRG
+            description: "Catégorie de la gare : A (grande), B (moyenne), C (petite)"
+          - name: Position géographique
+            description: "Latitude et longitude séparées par une virgule"
+          - name: Code commune
+            description: "Code INSEE commune — les 2 premiers chiffres = code département"
+          - name: Code_UIC
+            description: "Code UIC de la gare, peut être multiple (séparateur ;)"
+          - name: Id_Gare
+            description: "Identifiant unique UUID de la gare"

@@ -1,0 +1,28 @@
+name: 'dbt_sncf_tgv'
+version: '1.0.0'
+config-version: 2
+
+profile: 'dbt_sncf_tgv'
+
+model-paths: ["models"]
+seed-paths:  ["seeds"]
+test-paths:  ["tests"]
+macro-paths: ["macros"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  dbt_sncf_tgv:
+    staging:
+      +materialized: view
+    intermediate:
+      +materialized: view
+    marts:
+      +materialized: table
+
+seeds:
+  dbt_sncf_tgv:
+    departements:
+      +column_types:
+        code_departement: varchar
