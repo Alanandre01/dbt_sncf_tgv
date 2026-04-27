@@ -1,0 +1,95 @@
+version: 2
+
+models:
+  - name: stg_liaisons
+    description: "Régularité mensuelle TGV par liaison — nettoyée et normalisée"
+    columns:
+      - name: date_mois
+        description: "Premier jour du mois concerné (ex: 2024-01-01)"
+        tests:
+          - not_null
+      - name: service
+        description: "National ou International"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['National', 'International']
+      - name: gare_depart
+        description: "Nom brut de la gare de départ (UPPERCASE, source SNCF)"
+        tests:
+          - not_null
+      - name: gare_arrivee
+        description: "Nom brut de la gare d'arrivée (UPPERCASE, source SNCF)"
+        tests:
+          - not_null
+      - name: gare_depart_norm
+        description: "UPPER(TRIM(gare_depart)) — clé de jointure vers gares_mapping"
+        tests:
+          - not_null
+      - name: gare_arrivee_norm
+        description: "UPPER(TRIM(gare_arrivee)) — clé de jointure vers gares_mapping"
+        tests:
+          - not_null
+      - name: nb_circulations_prevues
+        description: "Nombre de trains planifiés sur la liaison ce mois"
+        tests:
+          - not_null
+
+  - name: stg_gares
+    description: "Référentiel des gares voyageurs françaises avec coordonnées GPS"
+    columns:
+      - name: nom_gare
+        description: "Nom officiel de la gare (casse originale)"
+        tests:
+          - not_null
+          - unique
+      - name: trigramme
+        description: "Code court 3 lettres — unique par gare"
+        tests:
+          - not_null
+          - unique
+      - name: id_gare
+        description: "UUID unique de la gare"
+        tests:
+          - not_null
+          - unique
+      - name: segment_drg
+        description: "Catégorie A/B/C — premier segment retenu pour les 9 gares multi-classées"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['A', 'B', 'C']
+      - name: latitude
+        description: "Latitude WGS84 en degrés décimaux"
+        tests:
+          - not_null
+      - name: longitude
+        description: "Longitude WGS84 en degrés décimaux"
+        tests:
+          - not_null
+      - name: code_departement
+        description: "2 chiffres métropole, 3 pour DOM (97x) — extrait du code commune INSEE"
+        tests:
+          - not_null
+      - name: nom_gare_norm
+        description: "UPPER(TRIM(nom_gare)) — clé de jointure avec stg_liaisons via gares_mapping"
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_departements
+    description: "Référentiel des 101 départements et régions françaises (depuis seed)"
+    columns:
+      - name: code_departement
+        description: "Code département VARCHAR — 01-95, 2A, 2B, 971-976"
+        tests:
+          - not_null
+          - unique
+      - name: nom_departement
+        description: "Nom complet du département"
+        tests:
+          - not_null
+      - name: nom_region
+        description: "Nom de la région (13 régions métropole + Corse + 5 DOM)"
+        tests:
+          - not_null
