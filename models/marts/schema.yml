@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: fct_regularite
+    description: >
+      Table de faits principale. Grain : liaison (départ × arrivée)
+      × mois × service. Contient toutes les métriques de régularité TGV.
+    columns:
+      - name: regularite_sk
+        description: Surrogate key de la ligne de fait
+        tests:
+          - not_null
+          - unique
+
+      - name: gare_depart_sk
+        description: FK vers dim_gare (rôle départ)
+        tests:
+          - relationships:
+              to: ref('dim_gare')
+              field: gare_sk
+
+      - name: gare_arrivee_sk
+        description: FK vers dim_gare (rôle arrivée)
+        tests:
+          - relationships:
+              to: ref('dim_gare')
+              field: gare_sk
+
+      - name: service_sk
+        description: FK vers dim_service
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_service')
+              field: service_sk
+
+      - name: periode_sk
+        description: FK vers dim_periode
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_periode')
+              field: periode_sk
+
+      - name: nb_circulations_prevues
+        tests:
+          - not_null
+
+      - name: taux_annulation
+        description: nb_trains_annules / nb_circulations_prevues
+
+  - name: dim_gare
+    columns:
+      - name: gare_sk
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_region
+    columns:
+      - name: region_sk
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_service
+    columns:
+      - name: service_sk
+        tests:
+          - not_null
+          - unique
+      - name: service
+        tests:
+          - accepted_values:
+              values: ['National', 'International']
+
+  - name: dim_periode
+    columns:
+      - name: periode_sk
+        tests:
+          - not_null
+          - unique
+      - name: trimestre
+        tests:
+          - accepted_values:
+              values: [1, 2, 3, 4]
