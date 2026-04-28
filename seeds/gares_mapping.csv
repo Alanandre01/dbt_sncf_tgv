@@ -1,0 +1,60 @@
+nom_liaison,nom_gare_officiel,trigramme,is_foreign
+AIX EN PROVENCE TGV,Aix-en-Provence TGV,AXV,false
+ANGERS SAINT LAUD,Angers Saint-Laud,ASL,false
+ANGOULEME,Angoulême,ANG,false
+ANNECY,Annecy,ANY,false
+ARRAS,Arras,ARR,false
+AVIGNON TGV,Avignon TGV,AVV,false
+BELLEGARDE (AIN),Bellegarde-sur-Valserine,BGD,false
+BESANCON FRANCHE COMTE TGV,Besançon Franche-Comté TGV,BFC,false
+BORDEAUX ST JEAN,Bordeaux Saint-Jean,BXJ,false
+BREST,Brest,BRT,false
+CHAMBERY CHALLES LES EAUX,Chambéry - Challes-les-Eaux,CRL,false
+DIJON VILLE,Dijon,DJV,false
+DOUAI,Douai,DOI,false
+DUNKERQUE,Dunkerque,DKQ,false
+GRENOBLE,Grenoble,GRE,false
+LA ROCHELLE VILLE,La Rochelle,LRE,false
+LAVAL,Laval,LAL,false
+LE CREUSOT MONTCEAU MONTCHANIN,Le Creusot - Montceau-les-Mines - Montchanin TGV,LCM,false
+LE MANS,Le Mans,LEN,false
+LILLE,Lille Flandres,LLF,false
+LYON PART DIEU,Lyon Part Dieu,LYD,false
+MACON LOCHE,Mâcon Loché TGV,MLH,false
+MARNE LA VALLEE,Marne-la-Vallée Chessy,MLV,false
+MARSEILLE ST CHARLES,Marseille Saint-Charles,MSC,false
+METZ,Metz,MZE,false
+MONTPELLIER,Montpellier Saint-Roch,MPL,false
+MULHOUSE VILLE,Mulhouse,MSE,false
+NANCY,Nancy,NCY,false
+NANTES,Nantes,NTS,false
+NICE VILLE,Nice,NIC,false
+NIMES,Nîmes,NMS,false
+PARIS EST,Paris Est,PES,false
+PARIS LYON,Paris Gare de Lyon,PLY,false
+PARIS MONTPARNASSE,Paris Montparnasse,PMP,false
+PARIS NORD,Paris Gare du Nord,PNO,false
+PARIS VAUGIRARD,Paris Montparnasse,PMP,false
+PERPIGNAN,Perpignan,PPN,false
+POITIERS,Poitiers,PST,false
+QUIMPER,Quimper,QPR,false
+REIMS,Reims,RMS,false
+RENNES,Rennes,RES,false
+SAINT ETIENNE CHATEAUCREUX,Saint-Étienne Châteaucreux,SEN,false
+ST MALO,Saint-Malo,SMP,false
+ST PIERRE DES CORPS,Saint-Pierre-des-Corps,SPC,false
+STRASBOURG,Strasbourg,STG,false
+TOULON,Toulon,TLN,false
+TOULOUSE MATABIAU,Toulouse Matabiau,TSE,false
+TOURCOING,Tourcoing,TRG,false
+TOURS,Tours,TRS,false
+VALENCE ALIXAN TGV,Valence TGV Rhône-Alpes Sud,VAL,false
+VANNES,Vannes,VAN,false
+BARCELONA,,,true
+FRANCFORT,,,true
+GENEVE,,,true
+ITALIE,,,true
+LAUSANNE,,,true
+MADRID,,,true
+STUTTGART,,,true
+ZURICH,,,true
