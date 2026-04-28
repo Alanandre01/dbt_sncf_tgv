@@ -3,24 +3,24 @@ version: 2
 models:
   - name: fct_regularite
     description: >
-      Table de faits principale. Grain : liaison (départ × arrivée)
-      × mois × service. Contient toutes les métriques de régularité TGV.
+      Table de faits principale au grain liaison × mois × service.
+      Contient les métriques de régularité et de ponctualité TGV.
     columns:
       - name: regularite_sk
-        description: Surrogate key de la ligne de fait
+        description: Surrogate key unique par enregistrement (liaison × mois × service)
         tests:
           - not_null
           - unique
 
       - name: gare_depart_sk
-        description: FK vers dim_gare (rôle départ)
+        description: FK vers dim_gare pour la gare de départ (role-playing dimension) — NULL pour les 8 gares étrangères
         tests:
           - relationships:
               to: ref('dim_gare')
               field: gare_sk
 
       - name: gare_arrivee_sk
-        description: FK vers dim_gare (rôle arrivée)
+        description: FK vers dim_gare pour la gare d'arrivée (role-playing dimension) — NULL pour les 8 gares étrangères
         tests:
           - relationships:
               to: ref('dim_gare')
@@ -43,18 +43,100 @@ models:
               field: periode_sk
 
       - name: nb_circulations_prevues
+        description: Nombre de trains prévus sur la liaison pour le mois
         tests:
           - not_null
 
+      - name: nb_trains_annules
+        description: Nombre de trains annulés sur la liaison pour le mois
+
       - name: taux_annulation
-        description: nb_trains_annules / nb_circulations_prevues
+        description: Ratio annulations / circulations prévues (entre 0 et 1), arrondi à 4 décimales
+
+      - name: duree_trajet_min
+        description: Durée moyenne du trajet en minutes — NULL pour les lignes COVID (avril 2020, duree = 0)
+
+      - name: nb_trains_retard_arrivee
+        description: Nombre de trains arrivés en retard
+
+      - name: retard_moy_tous_arrivee_min
+        description: Retard moyen à l'arrivée en minutes, tous trains confondus
+
+      - name: nb_trains_retard_15min
+        description: Nombre de trains avec un retard supérieur à 15 minutes
+
+      - name: nb_trains_retard_30min
+        description: Nombre de trains avec un retard supérieur à 30 minutes
+
+      - name: nb_trains_retard_60min
+        description: Nombre de trains avec un retard supérieur à 60 minutes
+
+      - name: prct_retard_causes_externes
+        description: "% de retards imputés aux causes externes (météo, intrusions...)"
+
+      - name: prct_retard_infrastructure
+        description: "% de retards imputés à l'infrastructure ferroviaire"
+
+      - name: prct_retard_gestion_trafic
+        description: "% de retards imputés à la gestion du trafic"
+
+      - name: prct_retard_materiel_roulant
+        description: "% de retards imputés au matériel roulant"
+
+      - name: prct_retard_gestion_gare
+        description: "% de retards imputés à la gestion en gare et réutilisation de matériel"
+
+      - name: prct_retard_prise_en_charge_voyageurs
+        description: "% de retards imputés à la prise en charge des voyageurs (affluence, PSH, correspondances)"
+
+      - name: cause_principale
+        description: Cause dominante de retard dérivée par CASE WHEN / GREATEST() sur les 6 colonnes prct_retard_*
+        tests:
+          - accepted_values:
+              values: ['externe', 'infra', 'gestion_trafic', 'materiel', 'gare', 'voyageurs']
 
   - name: dim_gare
+    description: >
+      Dimension gares — 1 ligne par gare française (2 782 lignes).
+      Enrichie avec département et région via stg_departements.
+      Utilisée en role-playing dimension dans fct_regularite
+      (gare_depart_sk et gare_arrivee_sk pointent toutes deux ici).
     columns:
       - name: gare_sk
+        description: Surrogate key générée sur nom_gare
         tests:
           - not_null
           - unique
+
+      - name: nom_gare
+        description: Nom officiel de la gare (casse originale source)
+
+      - name: nom_gare_norm
+        description: UPPER(TRIM(nom_gare)) — clé de jointure avec stg_liaisons via gares_mapping
+
+      - name: trigramme
+        description: Code court 3 lettres unique par gare
+
+      - name: segment_drg
+        description: Catégorie de la gare — A (grande), B (moyenne), C (petite) — premier segment retenu pour les 9 gares multi-classées
+
+      - name: code_uic
+        description: Code UIC de la gare — premier code retenu pour les 11 gares avec plusieurs UIC
+
+      - name: latitude
+        description: Latitude WGS84 extraite du champ "Position géographique" (séparateur ", ")
+
+      - name: longitude
+        description: Longitude WGS84 extraite du champ "Position géographique" (séparateur ", ")
+
+      - name: code_departement
+        description: Code département — 2 caractères en métropole, 3 pour les DOM (97x) — extrait du code commune INSEE
+
+      - name: nom_departement
+        description: Nom complet du département
+
+      - name: nom_region
+        description: Nom de la région administrative (13 régions métropole + Corse + 5 DOM)
 
   - name: dim_region
     columns:

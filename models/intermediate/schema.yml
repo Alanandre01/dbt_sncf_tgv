@@ -1,0 +1,115 @@
+version: 2
+
+models:
+  - name: int_liaisons_enrichies
+    description: >
+      Liaisons TGV enrichies avec les informations des deux gares (départ et arrivée)
+      et leur région. Pattern role-playing : gares_mapping et stg_gares sont jointurées
+      deux fois chacune. Grain : 1 ligne = 1 liaison × 1 mois × 1 service.
+      Les 8 gares étrangères produisent des NULLs propres sur toutes les colonnes gare/région.
+    columns:
+      # --- Clés de la liaison ---
+      - name: date_mois
+        description: Premier jour du mois (ex. 2024-01-01)
+        tests:
+          - not_null
+
+      - name: service
+        description: National ou International
+        tests:
+          - not_null
+
+      - name: gare_depart_key
+        description: Nom UPPERCASE abrégé source — clé de jointure vers gares_mapping (ex. BORDEAUX ST JEAN)
+        tests:
+          - not_null
+
+      - name: gare_arrivee_key
+        description: Nom UPPERCASE abrégé source — clé de jointure vers gares_mapping (ex. PARIS LYON)
+        tests:
+          - not_null
+
+      # --- Infos gare de départ ---
+      - name: nom_gare_depart
+        description: Nom officiel résolu via gares_mapping — NULL pour les 8 gares étrangères
+
+      - name: trigramme_depart
+        description: Code 3 lettres de la gare de départ — NULL pour les gares étrangères
+
+      - name: latitude_depart
+        description: Latitude WGS84 de la gare de départ — NULL pour les gares étrangères
+
+      - name: longitude_depart
+        description: Longitude WGS84 de la gare de départ — NULL pour les gares étrangères
+
+      - name: code_dept_depart
+        description: Code département de la gare de départ — NULL pour les gares étrangères
+
+      - name: region_depart
+        description: Région administrative de la gare de départ — NULL pour les gares étrangères
+
+      # --- Infos gare d'arrivée ---
+      - name: nom_gare_arrivee
+        description: Nom officiel résolu via gares_mapping — NULL pour les 8 gares étrangères
+
+      - name: trigramme_arrivee
+        description: Code 3 lettres de la gare d'arrivée — NULL pour les gares étrangères
+
+      - name: latitude_arrivee
+        description: Latitude WGS84 de la gare d'arrivée — NULL pour les gares étrangères
+
+      - name: longitude_arrivee
+        description: Longitude WGS84 de la gare d'arrivée — NULL pour les gares étrangères
+
+      - name: code_dept_arrivee
+        description: Code département de la gare d'arrivée — NULL pour les gares étrangères
+
+      - name: region_arrivee
+        description: Région administrative de la gare d'arrivée — NULL pour les gares étrangères
+
+      # --- Métriques circulation ---
+      - name: duree_trajet_min
+        description: Durée moyenne du trajet en minutes — NULL pour les lignes COVID (avril 2020, duree = 0)
+
+      - name: nb_circulations_prevues
+        description: Nombre de trains planifiés sur la liaison pour le mois
+        tests:
+          - not_null
+
+      - name: nb_trains_annules
+        description: Nombre de trains annulés sur la liaison pour le mois
+
+      # --- Métriques retard arrivée ---
+      - name: nb_trains_retard_arrivee
+        description: Nombre de trains arrivés en retard
+
+      - name: retard_moy_tous_arrivee_min
+        description: Retard moyen à l'arrivée en minutes, tous trains confondus
+
+      - name: nb_trains_retard_15min
+        description: Nombre de trains avec un retard supérieur à 15 minutes
+
+      - name: nb_trains_retard_30min
+        description: Nombre de trains avec un retard supérieur à 30 minutes
+
+      - name: nb_trains_retard_60min
+        description: Nombre de trains avec un retard supérieur à 60 minutes
+
+      # --- Causes de retard (%) ---
+      - name: prct_retard_causes_externes
+        description: "% de retards imputés aux causes externes (météo, intrusions...)"
+
+      - name: prct_retard_infrastructure
+        description: "% de retards imputés à l'infrastructure ferroviaire"
+
+      - name: prct_retard_gestion_trafic
+        description: "% de retards imputés à la gestion du trafic"
+
+      - name: prct_retard_materiel_roulant
+        description: "% de retards imputés au matériel roulant"
+
+      - name: prct_retard_gestion_gare
+        description: "% de retards imputés à la gestion en gare et réutilisation de matériel"
+
+      - name: prct_retard_prise_en_charge_voyageurs
+        description: "% de retards imputés à la prise en charge des voyageurs (affluence, PSH, correspondances)"

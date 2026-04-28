@@ -2,7 +2,11 @@ version: 2
 
 models:
   - name: stg_liaisons
-    description: "Régularité mensuelle TGV par liaison — nettoyée et normalisée"
+    description: >
+      Nettoyage de la source SNCF régularité TGV.
+      Parse les dates au format "YYYY-MM" en type date,
+      applique NULLIF sur la durée de trajet (lignes COVID à 0)
+      et normalise les noms de gares (UPPER/TRIM) pour la jointure.
     columns:
       - name: date_mois
         description: "Premier jour du mois concerné (ex: 2024-01-01)"
@@ -36,7 +40,10 @@ models:
           - not_null
 
   - name: stg_gares
-    description: "Référentiel des gares voyageurs françaises avec coordonnées GPS"
+    description: >
+      Nettoyage du référentiel gares SNCF.
+      Extrait latitude/longitude depuis le champ "Position géographique"
+      (séparateur ", ") et dérive le code département depuis le code commune INSEE.
     columns:
       - name: nom_gare
         description: "Nom officiel de la gare (casse originale)"
@@ -78,7 +85,9 @@ models:
           - unique
 
   - name: stg_departements
-    description: "Référentiel des 101 départements et régions françaises (depuis seed)"
+    description: >
+      Seed de référence des 101 départements français
+      avec leur région administrative (13 régions métropole + Corse + 5 DOM).
     columns:
       - name: code_departement
         description: "Code département VARCHAR — 01-95, 2A, 2B, 971-976"
