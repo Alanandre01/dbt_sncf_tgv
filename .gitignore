@@ -216,3 +216,6 @@ target/
 logs/
 *.duckdb
 *.duckdb.wal
+
+# macOS
+.DS_Store
