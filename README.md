@@ -1,9 +1,7 @@
 # dbt_sncf_tgv
 
-> Pipeline analytique de la ponctualité TGV en France
-> **Stack :** dbt Core 1.11.8 · DuckDB · Git · data.sncf.com · data.gouv.fr
-
----
+Pipeline analytique de la ponctualité TGV en France
+**Stack :** dbt Core 1.11.8 · DuckDB · Git · data.sncf.com · data.gouv.fr
 
 ## Contexte
 
@@ -19,9 +17,9 @@ par liaison, région et période.
 **Sources :** 3 fichiers publics (data.sncf.com + data.gouv.fr)
 **Périmètre :** 12 181 lignes de faits · 51 gares françaises · 130 liaisons · 99 mois (jan. 2018 → mars 2026)
 
----
-
 ## Architecture
+
+![Lineage Graph](docs/lineage.png)
 
 | Couche | Modèle | Lignes | Description |
 |---|---|---|---|
@@ -35,7 +33,6 @@ par liaison, région et période.
 | Marts | `dim_service` | 2 | Dimension service (National / International) |
 | Marts | `dim_periode` | 99 | Dimension temporelle |
 
----
 
 ## Structure du projet
 
@@ -52,13 +49,11 @@ data/
 scripts/
   load_sources.py  # charge les CSV bruts dans DuckDB (schéma raw)
 macros/
-  safe_cast.sql    # TRY_CAST — retourne NULL si le cast échoue
+  safe_cast.sql    # TRY_CAST - retourne NULL si le cast échoue
 tests/
   assert_annulations_coherentes.sql
   assert_prct_causes_somme_100.sql
 ```
-
----
 
 ## Lancer le projet
 
@@ -89,11 +84,9 @@ dbt test
 dbt docs generate && dbt docs serve
 ```
 
----
-
 ## Tests de qualité
 
-46 tests — 46/46 PASS
+46 tests - 46/46 PASS
 
 | Couche | Tests | Résultat |
 |---|---|---|
@@ -105,10 +98,9 @@ dbt docs generate && dbt docs serve
 `relationships` sur les 4 FK de `fct_regularite`, `accepted_values` sur service, trimestre et `cause_principale`.
 
 **Tests singuliers :**
-- `assert_annulations_coherentes` — `nb_annulés ≤ nb_prévus`
-- `assert_prct_causes_somme_100` — somme des 6 causes ≈ 100 % (±1, hors lignes sans données)
+- `assert_annulations_coherentes` - `nb_annulés ≤ nb_prévus`
+- `assert_prct_causes_somme_100` - somme des 6 causes ≈ 100 % (±1, hors lignes sans données)
 
----
 
 ## Décisions techniques
 
@@ -130,7 +122,6 @@ Ce pattern évite de dupliquer la dimension gare.
 La SK est générée sur `(gare_depart_key, gare_arrivee_key, date_mois, service)` plutôt que sur les SKs dimension,
 car les 733 lignes de gares étrangères ont `gare_sk = NULL`, ce qui causait 468 doublons avec `generate_surrogate_key`.
 
----
 
 ## Sources de données
 
